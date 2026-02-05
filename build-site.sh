@@ -112,6 +112,12 @@ cat > _site/index.html << 'EOF'
       <iframe src="slides/trees/slides.pdf"></iframe>
     </div>
     <p><a href="slides/trees/slides.pdf" download>Download PDF</a></p>
+
+    <h2>Binary Search Trees</h2>
+    <div class="slide-container">
+      <iframe src="slides/bst/slides.pdf"></iframe>
+    </div>
+    <p><a href="slides/bst/slides.pdf" download>Download PDF</a></p>
   </main>
 
   <footer>

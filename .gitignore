@@ -1,2 +1,10 @@
 OJ
 _site
+Questions
+ip-notes.md
+Doubts
+**/code/*
+!**/code/*.c
+*.o
+*.out
+a.out
