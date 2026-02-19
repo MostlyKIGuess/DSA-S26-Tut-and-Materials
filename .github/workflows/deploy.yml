@@ -160,6 +160,12 @@ jobs:
                 <iframe src="slides/bst/slides.pdf"></iframe>
               </div>
               <p><a href="slides/bst/slides.pdf" download>Download PDF</a></p>
+
+            <h2>Hashing</h2>
+            <div class="slide-container">
+              <iframe src="slides/hashing/slides.pdf"></iframe>
+            </div>
+            <p><a href="slides/hashing/slides.pdf" download>Download PDF</a></p>
             </main>
 
             <footer>
