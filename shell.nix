@@ -4,6 +4,7 @@ pkgs.mkShell {
   buildInputs = with pkgs; [
     typst
     python3
+    gdb
   ];
 
   shellHook = ''

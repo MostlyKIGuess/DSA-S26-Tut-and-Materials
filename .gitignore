@@ -8,3 +8,7 @@ Doubts
 *.o
 *.out
 a.out
+
+# not ready to commit yet
+debug
+heaps
