@@ -5,7 +5,6 @@ set -e
 rm -rf _site
 mkdir -p _site/slides
 
-
 for typ_file in $(find . -name "slides.typ" -not -path "./.git/*" -not -path "./.cache/*" -not -path "./_site/*"); do
   dir=$(dirname "$typ_file")
   topic=$(basename "$dir")
@@ -19,8 +18,10 @@ for typ_file in $(find . -name "slides.typ" -not -path "./.git/*" -not -path "./
   typst compile "$typ_file" "_site/slides/$topic/slides.pdf"
 done
 
+# Copy visualizations
+cp -r avl _site/ 2>/dev/null || true
 
-cat > _site/index.html << 'EOF'
+cat >_site/index.html <<'EOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,6 +125,16 @@ cat > _site/index.html << 'EOF'
       <iframe src="slides/hashing/slides.pdf"></iframe>
     </div>
     <p><a href="slides/hashing/slides.pdf" download>Download PDF</a></p>
+
+
+    <h2>AVL Trees and Intro to Graphs </h2>
+    <div class="slide-container">
+      <iframe src="slides/avl-and-graphs/slides.pdf"></iframe>
+    </div>
+    <p><a href="slides/avl-and-graphs/slides.pdf" download>Download PDF</a></p>
+
+    <h2 style="margin-top: 3rem;">Interactive Visualizations</h2>
+    <p><a href="avl/">AVL Tree Visualization</a> Interactive sim showing AVL rotations and balancing</p>
   </main>
 
   <footer>

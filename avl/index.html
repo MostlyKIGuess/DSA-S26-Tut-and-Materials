@@ -1,0 +1,748 @@
+<!-- Generated with the help of Claude Sonnet 4.6 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVL Tree Visualization | DSA-S26 - IIITH</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* -- Metropolis/polylux palette ----------------------------- */
+:root {
+  --bg:        #fafafa;
+  --surface:   #ffffff;
+  --border:    #e0e0e0;
+  --dark:      #23373b;
+  --mid:       #4a6066;
+  --muted:     #8a9a9e;
+  --accent:    #eb811b;   /* metropolis orange */
+  --accent2:   #23373b;
+  --insert-c:  #2ecc71;
+  --delete-c:  #e74c3c;
+  --rotate-c:  #eb811b;
+  --highlight: #fdf3e7;
+  --node-r:    22;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Fira Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  min-height: 100vh;
+}
+
+/* Header */
+.site-header {
+  background: var(--dark);
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  border-bottom: 3px solid var(--accent);
+}
+.site-header h1 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.site-header .subtitle {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 300;
+}
+.back-link {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.back-link:hover { color: #fff; border-bottom-color: rgba(255,255,255,0.4); }
+
+/* Layout */
+.app {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+/* Controls bar */
+.controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+}
+
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ctrl-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+input[type=number] {
+  font-family: 'Fira Mono', monospace;
+  font-size: 0.9rem;
+  width: 80px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--dark);
+  outline: none;
+  transition: border-color 0.15s;
+}
+input[type=number]:focus { border-color: var(--accent); }
+
+button {
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.42rem 0.9rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+}
+button:active { opacity: 0.8; }
+
+.btn-primary   { background: var(--dark);   color: #fff; }
+.btn-primary:hover { background: #2f4a50; }
+.btn-danger    { background: var(--delete-c); color: #fff; border-color: var(--delete-c); }
+.btn-danger:hover { background: #c0392b; }
+.btn-orange    { background: var(--accent); color: #fff; }
+.btn-orange:hover { background: #d4710f; }
+.btn-ghost     { background: transparent; color: var(--mid); border-color: var(--border); }
+.btn-ghost:hover { background: var(--bg); color: var(--dark); }
+
+.divider { width: 1px; height: 28px; background: var(--border); margin: 0 0.25rem; }
+
+/* Step controls */
+.step-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  background: var(--highlight);
+  border: 1px solid #f0d9b5;
+  border-top: none;
+  min-height: 44px;
+}
+.step-bar.hidden { display: none; }
+.step-info {
+  font-family: 'Fira Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--dark);
+  flex: 1;
+}
+.step-counter {
+  font-family: 'Fira Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.btn-step { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+.btn-auto { padding: 0.3rem 0.7rem; font-size: 0.78rem; background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-auto.running { background: var(--mid); border-color: var(--mid); }
+
+/* Canvas */
+.canvas-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  position: relative;
+  overflow: hidden;
+}
+canvas { display: block; width: 100%; }
+
+.empty-state {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; color: var(--muted);
+  font-style: italic;
+  pointer-events: none;
+}
+
+/* Bottom panels */
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.panel-header {
+  padding: 0.45rem 1rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.panel-body {
+  padding: 0.5rem 0;
+  max-height: 160px;
+  overflow-y: auto;
+  font-family: 'Fira Mono', monospace;
+  font-size: 0.78rem;
+}
+.panel-body::-webkit-scrollbar { width: 3px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border); }
+
+.log-entry {
+  padding: 0.22rem 1rem;
+  color: var(--muted);
+  display: flex; gap: 0.5rem; align-items: baseline;
+}
+.log-entry.insert { color: var(--insert-c); }
+.log-entry.delete { color: var(--delete-c); }
+.log-entry.rotate { color: var(--rotate-c); }
+.log-entry .tag {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+  letter-spacing: 0.05em;
+  min-width: 44px;
+}
+
+/* legend */
+.legend {
+  display: flex; gap: 1.25rem; flex-wrap: wrap;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem; color: var(--mid);
+  border-top: 1px solid var(--border);
+}
+.legend-item { display: flex; align-items: center; gap: 0.35rem; }
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid currentColor;
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>AVL Tree Visualization</h1>
+  <span class="subtitle">DSA-S26 / IIITH Spring 2026</span>
+  <a href="../" class="back-link">&lt;- Back to Slides</a>
+</header>
+
+<div class="app">
+
+  <!-- Controls -->
+  <div class="controls-bar">
+    <div class="ctrl-group">
+      <span class="ctrl-label">Insert</span>
+      <input type="number" id="insVal" placeholder="0-99" min="0" max="99">
+      <button class="btn-primary" onclick="startInsert()">Insert</button>
+    </div>
+    <div class="divider"></div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Delete</span>
+      <input type="number" id="delVal" placeholder="0-99" min="0" max="99">
+      <button class="btn-danger" onclick="startDelete()">Delete</button>
+    </div>
+    <div class="divider"></div>
+    <div class="ctrl-group">
+      <button class="btn-orange" onclick="randomTree()">Random Tree</button>
+      <button class="btn-ghost" onclick="resetTree()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Step bar -->
+  <div class="step-bar hidden" id="stepBar">
+    <button class="btn-step btn-ghost" onclick="stepPrev()">Prev</button>
+    <button class="btn-step btn-ghost" onclick="stepNext()">Next</button>
+    <button class="btn-auto" id="autoBtn" onclick="toggleAuto()">Play</button>
+    <span class="step-info" id="stepInfo">--</span>
+    <span class="step-counter" id="stepCounter"></span>
+    <button class="btn-step btn-ghost" onclick="finishSteps()">Done</button>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-wrap">
+    <canvas id="c" height="380"></canvas>
+    <div class="empty-state" id="emptyMsg">Insert values to build the tree</div>
+  </div>
+
+  <!-- Legend + log -->
+  <div class="bottom-row">
+    <div class="panel">
+      <div class="panel-header">Operations Log</div>
+      <div class="panel-body" id="logList">
+        <div class="log-entry"><span class="tag">init</span>Tree ready</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Legend</div>
+      <div class="legend">
+        <div class="legend-item" style="color:#23373b"><div class="legend-dot"></div>Normal node</div>
+        <div class="legend-item" style="color:#eb811b"><div class="legend-dot"></div>Highlighted / rotating</div>
+        <div class="legend-item" style="color:#2ecc71"><div class="legend-dot"></div>Inserted</div>
+        <div class="legend-item" style="color:#e74c3c"><div class="legend-dot"></div>Deleted / imbalanced</div>
+        <div class="legend-item" style="color:#3498db"><div class="legend-dot"></div>Path traversed</div>
+      </div>
+      <div class="panel-body" id="balInfo" style="padding:0.5rem 1rem; max-height:80px;">
+        <span style="color:var(--muted); font-size:0.78rem;">Balance factors shown below each node.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+//
+// AVL Tree data structure with step recording
+//
+class N {
+  constructor(v) { this.v = v; this.l = this.r = null; this.h = 1; }
+}
+
+function h(n) { return n ? n.h : 0; }
+function bal(n) { return n ? h(n.l) - h(n.r) : 0; }
+function upH(n) { if (n) n.h = 1 + Math.max(h(n.l), h(n.r)); }
+
+function rr(y) {          // right rotation
+  let x = y.l, T = x.r;
+  x.r = y; y.l = T;
+  upH(y); upH(x); return x;
+}
+function lr(x) {          // left rotation
+  let y = x.r, T = y.l;
+  y.l = x; x.r = T;
+  upH(x); upH(y); return y;
+}
+
+// Deep clone tree
+function cloneTree(n) {
+  if (!n) return null;
+  const c = new N(n.v);
+  c.h = n.h; c.l = cloneTree(n.l); c.r = cloneTree(n.r);
+  return c;
+}
+
+//  Insert with step snapshots -
+function insertSteps(rootIn, val) {
+  const steps = [];
+  let root = cloneTree(rootIn);
+
+  function snap(msg, highlights, pathSet, type='info') {
+    steps.push({ tree: cloneTree(root), msg, highlights: [...highlights], path: [...(pathSet||[])], type });
+  }
+
+  const path = [];
+  function ins(node, v) {
+    if (!node) {
+      const nn = new N(v);
+      snap(`Inserted ${v} as new node`, [v], path, 'insert');
+      return nn;
+    }
+    path.push(node.v);
+    snap(`Comparing ${v} with ${node.v}: go ${v < node.v ? 'left' : 'right'}`, [node.v], path, 'traverse');
+    if (v < node.v) node.l = ins(node.l, v);
+    else if (v > node.v) node.r = ins(node.r, v);
+    else { snap(`${v} already exists`, [node.v], path, 'info'); return node; }
+    path.pop();
+
+    upH(node);
+    const b = bal(node);
+    snap(`Updated height at ${node.v} - balance = ${b}`, [node.v], path, Math.abs(b) > 1 ? 'warn' : 'info');
+
+    if (b > 1 && v < node.l.v) {
+      snap(`LL imbalance at ${node.v}: right-rotate`, [node.v, node.l.v], path, 'rotate');
+      node = rr(node);
+      snap(`After right-rotation: root now ${node.v}`, [node.v], path, 'rotate');
+    } else if (b < -1 && v > node.r.v) {
+      snap(`RR imbalance at ${node.v}: left-rotate`, [node.v, node.r.v], path, 'rotate');
+      node = lr(node);
+      snap(`After left-rotation: root now ${node.v}`, [node.v], path, 'rotate');
+    } else if (b > 1 && v > node.l.v) {
+      snap(`LR imbalance at ${node.v}: left-rotate ${node.l.v} first`, [node.v, node.l.v], path, 'rotate');
+      node.l = lr(node.l);
+      snap(`Then right-rotate ${node.v}`, [node.v], path, 'rotate');
+      node = rr(node);
+      snap(`After LR rotation: root now ${node.v}`, [node.v], path, 'rotate');
+    } else if (b < -1 && v < node.r.v) {
+      snap(`RL imbalance at ${node.v}: right-rotate ${node.r.v} first`, [node.v, node.r.v], path, 'rotate');
+      node.r = rr(node.r);
+      snap(`Then left-rotate ${node.v}`, [node.v], path, 'rotate');
+      node = lr(node);
+      snap(`After RL rotation: root now ${node.v}`, [node.v], path, 'rotate');
+    }
+    return node;
+  }
+
+  root = ins(root, val);
+  snap(`Insert ${val} complete. Tree is balanced.`, [val], [], 'done');
+  return { steps, finalTree: root };
+}
+
+//  Delete with step snapshots -
+function deleteSteps(rootIn, val) {
+  const steps = [];
+  let root = cloneTree(rootIn);
+
+  function snap(msg, highlights, pathSet, type='info') {
+    steps.push({ tree: cloneTree(root), msg, highlights: [...highlights], path: [...(pathSet||[])], type });
+  }
+
+  function minVal(n) { while (n.l) n = n.l; return n.v; }
+
+  const path = [];
+  function del(node, v) {
+    if (!node) { snap(`${v} not found in tree`, [], path, 'warn'); return null; }
+    path.push(node.v);
+    snap(`Visiting ${node.v} - looking for ${v}`, [node.v], path, 'traverse');
+
+    if (v < node.v) node.l = del(node.l, v);
+    else if (v > node.v) node.r = del(node.r, v);
+    else {
+      snap(`Found ${v} - deleting`, [node.v], path, 'delete');
+      if (!node.l || !node.r) {
+        const tmp = node.l || node.r;
+        if (!tmp) { path.pop(); return null; }
+        node = tmp;
+        snap(`Replaced with ${node.v ? node.v : 'child'}`, [node.v], path, 'delete');
+      } else {
+        const succ = minVal(node.r);
+        snap(`In-order successor is ${succ} - will replace ${v}`, [node.v, succ], path, 'delete');
+        node.v = succ;
+        node.r = del(node.r, succ);
+      }
+    }
+    path.pop();
+
+    if (!node) return null;
+    upH(node);
+    const b = bal(node);
+    snap(`Updated height at ${node.v} - balance = ${b}`, [node.v], path, Math.abs(b) > 1 ? 'warn' : 'info');
+
+    if (b > 1 && bal(node.l) >= 0) {
+      snap(`LL imbalance at ${node.v}: right-rotate`, [node.v], path, 'rotate');
+      node = rr(node); snap(`After rotation: new subtree root ${node.v}`, [node.v], path, 'rotate');
+    } else if (b > 1 && bal(node.l) < 0) {
+      snap(`LR imbalance at ${node.v}`, [node.v], path, 'rotate');
+      node.l = lr(node.l); node = rr(node);
+      snap(`After LR rotation: new subtree root ${node.v}`, [node.v], path, 'rotate');
+    } else if (b < -1 && bal(node.r) <= 0) {
+      snap(`RR imbalance at ${node.v}: left-rotate`, [node.v], path, 'rotate');
+      node = lr(node); snap(`After rotation: new subtree root ${node.v}`, [node.v], path, 'rotate');
+    } else if (b < -1 && bal(node.r) > 0) {
+      snap(`RL imbalance at ${node.v}`, [node.v], path, 'rotate');
+      node.r = rr(node.r); node = lr(node);
+      snap(`After RL rotation: new subtree root ${node.v}`, [node.v], path, 'rotate');
+    }
+    return node;
+  }
+
+  root = del(root, val);
+  snap(`Delete ${val} complete. Tree is balanced.`, [], [], 'done');
+  return { steps, finalTree: root };
+}
+
+//
+// Layout
+//
+function layout(root) {
+  if (!root) return { nodes: [], edges: [] };
+  const nodes = [], edges = [];
+  const nodeMap = new Map();
+
+  // assign x positions using in-order count
+  let counter = 0;
+  function inorder(n, depth) {
+    if (!n) return;
+    inorder(n.l, depth + 1);
+    const id = counter++;
+    nodeMap.set(n, id);
+    nodes.push({ id, v: n.v, x: id, y: depth, b: bal(n) });
+    inorder(n.r, depth + 1);
+  }
+  inorder(root, 0);
+
+  function addEdges(n) {
+    if (!n) return;
+    if (n.l) { edges.push([nodeMap.get(n), nodeMap.get(n.l)]); addEdges(n.l); }
+    if (n.r) { edges.push([nodeMap.get(n), nodeMap.get(n.r)]); addEdges(n.r); }
+  }
+  addEdges(root);
+
+  return { nodes, edges };
+}
+
+//
+// Renderer
+//
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const emptyMsg = document.getElementById('emptyMsg');
+
+const COLORS = {
+  normal:    { fill: '#fff',    stroke: '#23373b', text: '#23373b' },
+  highlight: { fill: '#fdf3e7', stroke: '#eb811b', text: '#eb811b' },
+  insert:    { fill: '#eafaf1', stroke: '#2ecc71', text: '#27ae60' },
+  delete:    { fill: '#fdedec', stroke: '#e74c3c', text: '#c0392b' },
+  path:      { fill: '#eaf4fd', stroke: '#3498db', text: '#2980b9' },
+};
+
+let animFrame = null;
+let renderTarget = { nodes: [], edges: [] };
+let renderHighlights = new Set();
+let renderPath = new Set();
+let renderType = 'info';
+
+function drawTree(layoutData, highlights, path, stepType) {
+  const W = canvas.offsetWidth;
+  const H = 380;
+  canvas.width  = W * devicePixelRatio;
+  canvas.height = H * devicePixelRatio;
+  canvas.style.height = H + 'px';
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  ctx.clearRect(0, 0, W, H);
+
+  const { nodes, edges } = layoutData;
+  if (!nodes.length) { emptyMsg.style.display = 'flex'; return; }
+  emptyMsg.style.display = 'none';
+
+  const hSet = new Set(highlights);
+  const pSet = new Set(path);
+
+  // map x (in-order index) to pixel
+  const maxX = nodes.length - 1;
+  const maxY = Math.max(...nodes.map(n => n.y));
+  const PAD = 44;
+  const R = Math.min(22, Math.max(14, (W - PAD*2) / (maxX + 1) / 2 - 2));
+  const ROW_H = Math.min(80, Math.max(52, (H - PAD*2) / (maxY + 1)));
+
+  function px(n) { return maxX === 0 ? W/2 : PAD + n.x / maxX * (W - PAD*2); }
+  function py(n) { return PAD + n.y * ROW_H; }
+
+  // edges
+  edges.forEach(([pi, ci]) => {
+    const p = nodes.find(n => n.id === pi);
+    const c = nodes.find(n => n.id === ci);
+    if (!p || !c) return;
+    ctx.beginPath();
+    ctx.moveTo(px(p), py(p));
+    ctx.lineTo(px(c), py(c));
+    ctx.strokeStyle = '#d0d8da';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  // nodes
+  nodes.forEach(n => {
+    const x = px(n), y = py(n);
+    let scheme;
+    if (hSet.has(n.v))                    scheme = COLORS.highlight;
+    else if (pSet.has(n.v))               scheme = COLORS.path;
+    else                                  scheme = COLORS.normal;
+
+    // extra override by step type
+    if (stepType === 'insert' && hSet.has(n.v)) scheme = COLORS.insert;
+    if ((stepType === 'delete' || stepType === 'warn') && hSet.has(n.v)) scheme = COLORS.delete;
+
+    // shadow
+    ctx.save();
+    ctx.shadowColor = scheme.stroke + '55';
+    ctx.shadowBlur = hSet.has(n.v) ? 12 : 4;
+
+    ctx.beginPath();
+    ctx.arc(x, y, R, 0, Math.PI*2);
+    ctx.fillStyle = scheme.fill;
+    ctx.fill();
+    ctx.strokeStyle = scheme.stroke;
+    ctx.lineWidth = hSet.has(n.v) ? 2.5 : 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // value
+    ctx.font = `600 ${Math.min(14, R * 0.72)}px 'Fira Sans', sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = scheme.text;
+    ctx.fillText(n.v, x, y);
+
+    // balance factor
+    const bv = n.b;
+    ctx.font = `400 ${Math.min(10, R * 0.52)}px 'Fira Mono', monospace`;
+    ctx.fillStyle = bv === 0 ? '#27ae60' : (Math.abs(bv) === 1 ? '#eb811b' : '#e74c3c');
+    ctx.fillText(bv >= 0 ? '+' + bv : '' + bv, x, y + R + 10);
+  });
+}
+
+//
+// App State
+//
+let liveTree = null;  // committed tree
+let steps = [];
+let stepIdx = -1;
+let autoTimer = null;
+let isAuto = false;
+
+function currentLayout() {
+  if (!liveTree) return { nodes: [], edges: [] };
+  return layout(liveTree);
+}
+
+function render(tree, highlights, path, type) {
+  const lay = tree ? layout(tree) : { nodes: [], edges: [] };
+  drawTree(lay, highlights || [], path || [], type || 'info');
+}
+
+//  Step machine -
+function showStep(idx) {
+  if (!steps.length) return;
+  idx = Math.max(0, Math.min(steps.length - 1, idx));
+  stepIdx = idx;
+  const s = steps[idx];
+  document.getElementById('stepInfo').textContent = s.msg;
+  document.getElementById('stepCounter').textContent = `${idx + 1} / ${steps.length}`;
+  render(s.tree, s.highlights, s.path, s.type);
+}
+
+function stepNext() {
+  if (stepIdx < steps.length - 1) showStep(stepIdx + 1);
+  else finishSteps();
+}
+function stepPrev() { showStep(stepIdx - 1); }
+
+function toggleAuto() {
+  if (isAuto) { clearInterval(autoTimer); isAuto = false; document.getElementById('autoBtn').textContent = 'Play'; document.getElementById('autoBtn').classList.remove('running'); return; }
+  isAuto = true;
+  document.getElementById('autoBtn').textContent = 'Pause';
+  document.getElementById('autoBtn').classList.add('running');
+  autoTimer = setInterval(() => {
+    if (stepIdx >= steps.length - 1) { finishSteps(); return; }
+    showStep(stepIdx + 1);
+  }, 900);
+}
+
+function finishSteps() {
+  clearInterval(autoTimer); isAuto = false;
+  document.getElementById('autoBtn').textContent = 'Play';
+  document.getElementById('autoBtn').classList.remove('running');
+  steps = []; stepIdx = -1;
+  document.getElementById('stepBar').classList.add('hidden');
+  render(liveTree, [], [], 'info');
+}
+
+function beginStepSequence(stepsArr, finalTree, logEntries) {
+  // commit
+  liveTree = finalTree;
+  steps = stepsArr;
+  stepIdx = -1;
+  document.getElementById('stepBar').classList.remove('hidden');
+  logEntries.forEach(e => addLog(e.tag, e.msg, e.cls));
+  showStep(0);
+}
+
+//  Logging -
+function addLog(tag, msg, cls) {
+  const list = document.getElementById('logList');
+  const div = document.createElement('div');
+  div.className = 'log-entry ' + (cls || '');
+  div.innerHTML = `<span class="tag">${tag}</span>${msg}`;
+  list.insertBefore(div, list.firstChild);
+  while (list.children.length > 80) list.removeChild(list.lastChild);
+}
+
+//
+// Public actions
+//
+function startInsert() {
+  const v = parseInt(document.getElementById('insVal').value);
+  if (isNaN(v) || v < 0 || v > 99) { alert('Enter a number 0-99'); return; }
+  document.getElementById('insVal').value = '';
+  finishSteps();
+
+  const { steps: s, finalTree } = insertSteps(liveTree, v);
+  const rotations = s.filter(x => x.type === 'rotate');
+  const logs = [{ tag: 'ins', msg: `Insert ${v}`, cls: 'insert' }];
+  rotations.forEach(r => logs.push({ tag: 'rot', msg: r.msg, cls: 'rotate' }));
+  beginStepSequence(s, finalTree, logs);
+}
+
+function startDelete() {
+  const v = parseInt(document.getElementById('delVal').value);
+  if (isNaN(v) || v < 0 || v > 99) { alert('Enter a number 0-99'); return; }
+  document.getElementById('delVal').value = '';
+  finishSteps();
+
+  const { steps: s, finalTree } = deleteSteps(liveTree, v);
+  const logs = [{ tag: 'del', msg: `Delete ${v}`, cls: 'delete' }];
+  s.filter(x => x.type === 'rotate').forEach(r => logs.push({ tag: 'rot', msg: r.msg, cls: 'rotate' }));
+  beginStepSequence(s, finalTree, logs);
+}
+
+function resetTree() {
+  finishSteps();
+  liveTree = null;
+  document.getElementById('logList').innerHTML = '<div class="log-entry"><span class="tag">init</span>Tree reset</div>';
+  render(null, [], [], 'info');
+}
+
+function randomTree() {
+  resetTree();
+  // pick 8-11 unique values
+  const count = 8 + Math.floor(Math.random() * 4);
+  const vals = [];
+  while (vals.length < count) {
+    const v = Math.floor(Math.random() * 99) + 1;
+    if (!vals.includes(v)) vals.push(v);
+  }
+  addLog('rand', `Generating: ${vals.join(', ')}`, '');
+  vals.forEach(v => {
+    const { finalTree } = insertSteps(liveTree, v);
+    liveTree = finalTree;
+  });
+  addLog('done', `Random tree with ${vals.length} nodes ready`, 'insert');
+  render(liveTree, [], [], 'info');
+  // offer step-through of the last insert so user can see final balance
+}
+
+//  keyboard shortcuts -
+document.getElementById('insVal').addEventListener('keydown', e => { if (e.key === 'Enter') startInsert(); });
+document.getElementById('delVal').addEventListener('keydown', e => { if (e.key === 'Enter') startDelete(); });
+document.addEventListener('keydown', e => {
+  if (steps.length) {
+    if (e.key === 'ArrowRight') stepNext();
+    if (e.key === 'ArrowLeft')  stepPrev();
+    if (e.key === ' ') { e.preventDefault(); toggleAuto(); }
+  }
+});
+
+//  resize -
+window.addEventListener('resize', () => {
+  if (steps.length && stepIdx >= 0) showStep(stepIdx);
+  else render(liveTree, [], [], 'info');
+});
+
+//  init with a simple tree -
+;[50, 30, 70, 20, 40, 60, 80].forEach(v => { const { finalTree } = insertSteps(liveTree, v); liveTree = finalTree; });
+render(liveTree, [], [], 'info');
+</script>
+</body>
+</html>
