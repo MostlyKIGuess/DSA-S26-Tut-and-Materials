@@ -204,7 +204,7 @@
   struct Edge {
       int to, weight;
   };
-  vector<Edge> adj[MAX_N]; // or just use pait<int,int>
+  vector<Edge> adj[MAX_N]; // or just use pair<int,int>
   int main() {
       int n, m;
       cin >> n >> m;
