@@ -38,13 +38,14 @@ jobs:
             mkdir -p "_site/slides/$topic"
 
             # Copy images
-            find "$dir" -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" \) -exec cp {} "_site/slides/$topic/" \; 2>/dev/null || true
+            find "$dir" -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.svg" \) \
+              -exec cp {} "_site/slides/$topic/" \; 2>/dev/null || true
 
             # Build PDF
             typst compile "$typ_file" "_site/slides/$topic/slides.pdf"
           done
 
-      # Copy visualizations
+          # Copy visualizations
           cp -r avl _site/
 
       - name: Generate index
@@ -164,21 +165,23 @@ jobs:
               </div>
               <p><a href="slides/bst/slides.pdf" download>Download PDF</a></p>
 
-            <h2>Hashing</h2>
-            <div class="slide-container">
-              <iframe src="slides/hashing/slides.pdf"></iframe>
-            </div>
-            <p><a href="slides/hashing/slides.pdf" download>Download PDF</a></p>
+              <h2>Hashing</h2>
+              <div class="slide-container">
+                <iframe src="slides/hashing/slides.pdf"></iframe>
+              </div>
+              <p><a href="slides/hashing/slides.pdf" download>Download PDF</a></p>
 
-
-              <h2>AVL Trees and Intro to Graphs </h2>
+              <h2>AVL Trees and Intro to Graphs</h2>
               <div class="slide-container">
                 <iframe src="slides/avl-and-graphs/slides.pdf"></iframe>
               </div>
               <p><a href="slides/avl-and-graphs/slides.pdf" download>Download PDF</a></p>
 
               <h2 style="margin-top: 3rem;">Interactive Visualizations</h2>
-              <p><a href="avl/">AVL Tree Visualization</a> Interactive sim showing AVL rotations and balancing</p>
+              <p>
+                <a href="avl/">AVL Tree Visualization</a>
+                Interactive sim showing AVL rotations and balancing
+              </p>
             </main>
 
             <footer>
