@@ -126,12 +126,17 @@ cat >_site/index.html <<'EOF'
     </div>
     <p><a href="slides/hashing/slides.pdf" download>Download PDF</a></p>
 
-
-    <h2>AVL Trees and Intro to Graphs </h2>
+    <h2>AVL Trees and Intro to Graphs</h2>
     <div class="slide-container">
       <iframe src="slides/avl-and-graphs/slides.pdf"></iframe>
     </div>
     <p><a href="slides/avl-and-graphs/slides.pdf" download>Download PDF</a></p>
+
+    <h2>SCC, Topological Sort, and Dijkstra</h2>
+    <div class="slide-container">
+      <iframe src="slides/scc-topo-dij/slides.pdf"></iframe>
+    </div>
+    <p><a href="slides/scc-topo-dij/slides.pdf" download>Download PDF</a></p>
 
     <h2 style="margin-top: 3rem;">Interactive Visualizations</h2>
     <p><a href="avl/">AVL Tree Visualization</a> Interactive sim showing AVL rotations and balancing</p>

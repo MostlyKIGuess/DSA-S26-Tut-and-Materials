@@ -46,7 +46,7 @@ jobs:
           done
 
           # Copy visualizations
-          cp -r avl _site/
+          cp -r avl _site/ 2>/dev/null || true
 
       - name: Generate index
         run: |
@@ -176,6 +176,12 @@ jobs:
                 <iframe src="slides/avl-and-graphs/slides.pdf"></iframe>
               </div>
               <p><a href="slides/avl-and-graphs/slides.pdf" download>Download PDF</a></p>
+
+              <h2>SCC, Topological Sort, and Dijkstra</h2>
+              <div class="slide-container">
+                <iframe src="slides/scc-topo-dij/slides.pdf"></iframe>
+              </div>
+              <p><a href="slides/scc-topo-dij/slides.pdf" download>Download PDF</a></p>
 
               <h2 style="margin-top: 3rem;">Interactive Visualizations</h2>
               <p>
