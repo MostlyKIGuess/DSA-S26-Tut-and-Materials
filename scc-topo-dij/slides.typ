@@ -212,7 +212,10 @@
   }
   ```
 
-  *If `result.size() < n`: cycle exists!*
+]
+
+#slide[
+    *If `result.size() < n`: cycle exists!*
 ]
 
 #new-section[Practice Problems - Topological Sort]
