@@ -138,6 +138,12 @@ cat >_site/index.html <<'EOF'
     </div>
     <p><a href="slides/scc-topo-dij/slides.pdf" download>Download PDF</a></p>
 
+    <h2>Shortest All</h2>
+    <div class="slide-container">
+      <iframe src="slides/shortest-all/slides.pdf"></iframe>
+    </div>
+    <p><a href="slides/shortest-all/slides.pdf" download>Download PDF</a></p>
+
     <h2 style="margin-top: 3rem;">Interactive Visualizations</h2>
     <p><a href="avl/">AVL Tree Visualization</a> Interactive sim showing AVL rotations and balancing</p>
   </main>
